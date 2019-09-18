@@ -1,0 +1,13 @@
+{
+    "name": "my-actor",
+    "version": "0.0.1",
+    "dependencies": {
+        "puppeteer": "^1.6.2",
+        "file-system": "^2.2.2",
+        "mongodb-stitch-server-sdk": "^4.5.0"
+    },
+    "scripts": {
+        "start": "node main.js"
+    },
+    "author": "Me!"
+}

@@ -1,0 +1,11 @@
+const surnames = ["Shelly", "Hana", "Pat", "Sierra", "Veda", "Sindy", "Peter", "Raul", "Geralyn", "Marty", "Aurore", "Juana", "Tajuana", "Blanche", "Alejandra", "Bobbi", "Jarvis", "Jim", "Cornelia", "Roselia", "Georgia", "Lawerence", "Magen", "Emmy", "Ignacio", "Annabell", "Rudolf", "Ilda", "Nellie", "Keira", "Digna", "Joye", "Elinor", "Niki", "Markus", "Deane", "Karyl", "Helga", "Fernande", "Mia", "Napoleon", "Lyndon", "Harry", "Stacey", "Richard", "Willis", "Vita", "Paulina", "Kyung", "Dorthey", "Geoffrey", "Dianne", "Mohammad", "Ivey", "Lona", "Gilda", "Shae", "Charita", "Florene", "Honey", "Eleanor", "Myrna", "Robin", "Lanie", "Lorean", "Anne", "Regina", "Harold", "Guillermo", "Federico", "Deloras", "Kevin", "Tilda", "Tierra", "Wilbur", "Blake", "Charlene", "Margaret", "Stasia", "Delores", "Carli", "Barrie", "Agueda", "Arvilla", "Kandra", "Jacquline", "Armand", "Janene", "Sueann", "Catherine", "Sheree", "Summer", "Lakeisha", "Christa", "Margarita", "Cheryll", "Rena", "Launa", "Lenard"]
+const lastnames = ["Sears", "Leavy", "Hunsicker", "Hochman", "Held", "Clawson", "Baez", "Hazell", "Patillo", "Stinchcomb", "Silcox", "Cashen", "Pina", "Bulger", "Gershman", "Coppinger", "Wrenn", "Wafford", "Filippi", "Holte", "Kamel", "Cowie", "Dufour", "Marzano", "Vickrey", "Delarosa", "Dorsett", "Leiker", "Otto", "Garrow", "Laurel", "Mullinax", "Ange", "Kerschner", "La", "Deluca", "Navarra", "Peugh", "Hillman", "Carew", "Fahnestock", "Hausmann", "Prime", "Oscar", "Odonnell", "Pannone", "Loiacono", "Schmieder", "Orosz", "Yoakum", "Lewison", "Hoyle", "Broadus", "Oda", "Dey", "Calvery", "Schrick", "Shingleton", "Schaper", "Merced", "Schulenberg", "Matarazzo", "Rigdon", "Christen", "Fedler", "Beaston", "Lopp", "Ansari", "Goza", "Geddie", "Marchant", "Weir", "Myrie", "Lay", "Behrendt", "Billingsly", "Flecha", "Deveau", "Ahlstrom", "Streeter", "Sancho", "Casselman", "Fedrick", "Devine", "Figueiredo", "Stripling", "Weddell", "Rigo", "Pickles", "Mcnaught", "Moriarity", "Selden", "Fregoso", "Fuselier", "Rhoads", "Nicoll", "Nodine", "Zaleski", "Halloway", "Mullenix"]
+
+
+
+const genFirstName = () => surnames[Math.floor( Math.random() * surnames.length )]
+const genLastName = () => lastnames[Math.floor( Math.random() * lastnames.length )]
+
+
+exports.generateFirstName = genFirstName;
+exports.generateLastName = genLastName;
