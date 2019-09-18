@@ -5,7 +5,6 @@ const puppeteer = require('puppeteer')
 const fs = require('fs');
 const gen = require('./generators/allGenerators.js')
 const tempMail = require('./email/temp-mail.js')
-const pusherapp = require('./process/pusher-app.js')
 const dao = require('./dao/dao.js')
 
 (async () => {
@@ -42,6 +41,7 @@ const solveV2Captcha = async function (url, optBrowser, optPage, secondRun) {
       console.log("NO CAPTCHA FOUND")
       return {browser, page}
     }
+
 
     const bFrame0 = await retrieveCaptchaFrame(page, "bframe", 0)
     if(!secondRun) {
@@ -96,12 +96,12 @@ const solveV2Captcha = async function (url, optBrowser, optPage, secondRun) {
     if(worked == null && !secondRun) {
         //need to resolve one more
         console.log("NEED ANOTHER TRY")
-          
+
         await bFrame1.click("#recaptcha-reload-button")
         await(solveV2Captcha(url,browser, page, true))
     }
 
-           
+            
     console.log("worked ? :",worked)
     
     return {
@@ -278,35 +278,32 @@ const retrieveCaptchaFrame = async function(page, part, idx) {
   return captchaFrame
 }
 
-const res =  await solveV2Captcha("https://dashboard.pusher.com/accounts/sign_up")
+const res =  await solveV2Captcha("https://gitlab.com/users/sign_in#register-pane")
 console.log("gen", gen)
 const user = {
+    firstName: gen.firstName(),
+    lastName: gen.lastName(),
     userName: gen.userName(),
     password: gen.password(),
     email : tempMail.getAddress(gen.userName().toLowerCase())
 }
 console.log("USER : ", user)
 
-await res.page.type("#signup-email", user.email)
-await res.page.type("#signup-password", user.password)
-await res.page.type("#signup-company", user.userName)         
-    
+await res.page.type("#new_user_name", user.firstName + " " + user.lastName)
+await res.page.type("#new_user_email", user.email)
+await res.page.type("#new_user_email_confirmation", user.email)
+await res.page.type("#new_user_password", user.password)
+await res.page.type("#new_user_username", user.userName)
+
+await res.page.click("#terms_opt_in")
+
 await res.page.waitFor(200)
-await res.page.click("#signup_form > input[type='submit']")
+await res.page.click("#new_new_user > div.submit-container > input")
 await res.page.waitFor(1000)
 
-let worked = await res.page.evaluate(() => document.querySelector("#signup_form") == undefined)
+let worked = await res.page.evaluate(() => document.querySelector("#new_new_user") == undefined)
 console.log("1st try worked ? ", worked)
-if(!worked) {
- 
-  await solveV2Captcha("https://dashboard.pusher.com/accounts/sign_up", res.browser, res.page)
-  await res.page.waitFor(1000)
-  await res.page.click("#signup_form > input[type='submit']")
-  await res.page.waitFor(1000)
 
-  worked = await res.page.evaluate(() => document.querySelector("#signup_form") == undefined)
-  console.log("2nd try worked ? ", worked)
-}
 if(worked) {
     try {
         await tempMail.validateEmail(user.email, res.browser)
@@ -318,13 +315,62 @@ if(worked) {
    
 } else return;
 
-const enrichedData = await pusherapp.getPusherApiKeys(res.page, user)
+await res.page.goto("https://gitlab.com/users/sign_in#login-pane")
+await res.page.waitFor(600)
 
-console.log(await res.page.title())
-//savedUser, service, category, appData, apiKey, workspace
+await res.page.type("#user_login", user.email)
+await res.page.type("#user_password", user.password)
+await res.page.click("#new_user > div.submit-container.move-submit-down > input")
+
+await res.page.waitFor(500)
+
+await res.page.goto("https://gitlab.com/profile/personal_access_tokens")
+await res.page.waitFor(1000)
+
+await res.page.type("#personal_access_token_name", user.userName.substring(0,6))
+
+await res.page.type("#personal_access_token_expires_at", "203"+Math.floor(Math.random()*10)+"-01-0"+Math.floor(Math.random()*8+1))
+
+await res.page.evaluate(() =>
+document.querySelectorAll(".form-group input[type=checkbox]").forEach(s => s.click())
+)
+await res.page.waitFor(200)
+await res.page.click(".qa-create-token-button")
+await res.page.waitFor(1500)
+
+const gitlabToken = await res.page.evaluate(() =>
+        document.querySelector("#created-personal-access-token").value
+    )
+
+console.log("GITLABTOKEN", gitlabToken)
+
+//NOW ZEIT.CO AND OTHER SERVICES
+await res.page.goto("https://zeit.co/signup")
+await res.page.waitFor(1000)
+await res.page.click(".gitlab-form > button")
+await res.page.waitFor(3500)
+await res.page.click("input.btn.btn-success")
+await res.page.waitFor(5000)
+await res.page.click(".footer-menu button")
+await res.page.waitFor(5000)
+await res.page.click(".footer-menu button")
+await res.page.waitFor(500)
+await res.page.goto("https://zeit.co/account/tokens")
+await res.page.waitFor(2000)
+await res.page.click(".menu > div.actions > button.button.small.icon-color:not(.disabled)")
+await res.page.waitFor(1000)
+await res.page.type("div.focus-trap input", "token1")
+await res.page.click("footer > button:nth-child(2)")
+await res.page.waitFor(1000)
+const zeitToken = await res.page.evaluate(() => document.querySelector("div.focus-trap  input").value)
+console.log("zeitToken", zeitToken)
+
+const appData = {
+    zeit: zeitToken
+}
 console.log("SAVING 101");
-await dao.save(user, "pusher", "messaging", enrichedData.app, enrichedData.apiKey)
+await dao.save(user, "gitlab", "global", appData, gitlabToken)
 console.log("SAVED");
 await res.browser.close()
-process.exit(0)
+
 })();
