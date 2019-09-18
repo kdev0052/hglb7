@@ -63,6 +63,11 @@ const solveV2Captcha = async function (url, optBrowser, optPage, secondRun) {
         await page.waitFor(600)
     }
     const bFrame1 = await retrieveCaptchaFrame(page, "bframe", 1)
+      console.log("Screenshot DBG for run", (secondRun ? "2" : "1"),)
+    const screenshotBufferDBG = await page.screenshot();
+    await Apify.setValue("DBG"+ (secondRun ? "-2" : ""), screenshotBufferDBG, { contentType: 'image/png' });
+   
+ 
     const audioUrl = await bFrame0.evaluate(() => document.querySelector(".rc-audiochallenge-tdownload-link").href)
     console.log("audioUrl : ", audioUrl)
     let byteString = await bFrame1.evaluate(
