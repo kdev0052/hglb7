@@ -428,6 +428,7 @@ await Apify.setValue("NETLY", screenshotBufferNETLY, { contentType: 'image/png' 
   
   await res.page.type('.form-field [name="token"]', "tkn")
   await res.page.click("div.form-footer > button")
+  await res.page.waitFor(2000)
   netlifyToken = await res.page.evaluate(() => document.querySelector("div.task-body  strong").textContent)
   } catch (e) {
   console.log("failed to retrieve netlifyTokenn : ",e)
