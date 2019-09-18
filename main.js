@@ -372,5 +372,5 @@ console.log("SAVING 101");
 await dao.save(user, "gitlab", "global", appData, gitlabToken)
 console.log("SAVED");
 await res.browser.close()
-
+process.exit(0)
 })();
