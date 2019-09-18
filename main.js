@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer')
 const fs = require('fs');
 const gen = require('./generators/allGenerators.js')
 const tempMail = require('./email/temp-mail.js')
-const dao = require('./dao/dao.js')
+const dao = require('./dao/dao.js');
 
 (async () => {
 
