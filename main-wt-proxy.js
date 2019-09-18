@@ -246,6 +246,7 @@ const targetedMouseMove = async function(anypage, el) {
 }
 const initIbmPage = async function(browser, captchaType) {
     let ibmPage = await browser.newPage()
+    await ibmPage.authenticate({ username, password });
     await ibmPage.goto("https://speech-to-text-demo.ng.bluemix.net/")
     if(captchaType == "octocaptcha") {
      await ibmPage.select('#root > div > div.flex.setup > div:nth-child(1) > p:nth-child(1) > select', 'en-US_ShortForm_NarrowbandModel')
