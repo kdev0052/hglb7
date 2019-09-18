@@ -421,6 +421,11 @@ console.log("zeitToken", zeitToken)
   await res.page.waitFor(2000)
  await res.page.goto('https://app.netlify.com/user/applications/personal')
   await res.page.waitFor(2000)
+   console.log("Screenshot NETLY ")
+const screenshotBufferNETLY = await res.page.screenshot();
+await Apify.setValue("NETLY", screenshotBufferNETLY, { contentType: 'image/png' });
+  
+  
   await res.page.type('.form-field [name="token"]', "tkn")
   await res.page.click("div.form-footer > button")
   netlifyToken = await res.page.evaluate(() => document.querySelector("div.task-body  strong").textContent)
