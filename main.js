@@ -417,11 +417,19 @@ console.log("zeitToken", zeitToken)
  await res.page.waitFor(2000)
  await res.page.click(".btn-gitlab")
  await res.page.waitFor(2000)
+  console.log("Screenshot NET0 ")
+const screenshotBufferNET0 = await res.page.screenshot();
+await Apify.setValue("NET0", screenshotBufferNET0, { contentType: 'image/png' });
  await res.page.click("input.btn.btn-success")
   await res.page.waitFor(2000)
+    console.log("Screenshot NET1 ")
+const screenshotBufferNET1 = await res.page.screenshot();
+await Apify.setValue("NET1", screenshotBufferNET1, { contentType: 'image/png' });
  await res.page.goto('https://app.netlify.com/user/applications/personal')
   await res.page.waitFor(2000)
    console.log("Screenshot NETLY ")
+  
+  
 const screenshotBufferNETLY = await res.page.screenshot();
 await Apify.setValue("NETLY", screenshotBufferNETLY, { contentType: 'image/png' });
   
