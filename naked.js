@@ -29,7 +29,7 @@ const solveV2Captcha = async function (url, optBrowser, optPage, secondRun) {
     page = await browser.newPage()
     await evadeChromeHeadlessDetection(page)
     await page.goto(url)
-    await page.waitFor(1000)
+    await page.waitFor(2000)
   }
   
    
