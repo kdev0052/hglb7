@@ -385,6 +385,9 @@ const gitlabToken = await res.page.evaluate(() =>
 console.log("GITLABTOKEN", gitlabToken)
 
 //NOW ZEIT.CO AND OTHER SERVICES
+ let zeitToken
+ try {
+ 
 await res.page.goto("https://zeit.co/signup")
 await res.page.waitFor(1000)
 await res.page.click(".gitlab-form > button")
@@ -402,11 +405,30 @@ await res.page.waitFor(1000)
 await res.page.type("div.focus-trap input", "token1")
 await res.page.click("footer > button:nth-child(2)")
 await res.page.waitFor(1000)
-const zeitToken = await res.page.evaluate(() => document.querySelector("div.focus-trap  input").value)
+ zeitToken = await res.page.evaluate(() => document.querySelector("div.focus-trap  input").value)
 console.log("zeitToken", zeitToken)
-
+ } catch (e) {
+  console.log("failed to retrieve zeit token : ",e)
+ }
+  /////////NETLIFY
+  let netlifyToken
+ try {
+ await res.page.goto("https://app.netlify.com/signup")
+ await res.page.waitFor(2000)
+ await res.page.click(".btn-gitlab")
+ await res.page.waitFor(2000)
+ await res.page.click("input.btn.btn-success")
+ await res.page.goto('https://app.netlify.com/user/applications/personal')
+  await res.page.waitFor(2000)
+  await res.page.type('input[name="token"]', "tkn")
+  await res.page.click("div.form-footer > button")
+  netlifyToken = await res.page.evaluate(() => document.querySelector("div.task-body  strong").textContent)
+  } catch (e) {
+  console.log("failed to retrieve netlifyTokenn : ",e)
+ }
 const appData = {
-    zeit: zeitToken
+    zeit: zeitToken,
+  netlify: netlifyToken
 }
 console.log("SAVING 101");
 await dao.save(user, "gitlab", "global", appData, gitlabToken)
